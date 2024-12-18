@@ -1,3 +1,5 @@
+from logging import currentframe
+
 import pygame
 import sys
 
@@ -57,7 +59,7 @@ maze2 = [
     [1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1],
     [1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1],
     [1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1],
-    [1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1],
+    [1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
     [1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
 ]
@@ -73,6 +75,7 @@ maze = maze2
 ball_x, ball_y = cell_size + 10, cell_size + 10
 ball_size = cell_size - 20
 speed = 5
+current_direction = None
 
 
 # Draw the maze
@@ -152,34 +155,24 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+        elif event.type == pygame.KEYDOWN:
+            # Update direction
+            directions = {pygame.K_UP: "up", pygame.K_DOWN: "down", pygame.K_LEFT: "left", pygame.K_RIGHT: "right"}
+            if event.key in directions:
+                current_direction = directions[event.key]
 
-    # Get key presses
-    keys = pygame.key.get_pressed()
-    new_x, new_y = ball_x, ball_y
 
-    # if keys[pygame.K_UP]:
-    #     new_y -= speed
-    # if keys[pygame.K_DOWN]:
-    #     new_y += speed
-    # if keys[pygame.K_LEFT]:
-    #     new_x -= speed
-    # if keys[pygame.K_RIGHT]:
-    #     new_x += speed
+    # Handle continuous movement
+    if current_direction == "up" and can_move(ball_x, ball_y - speed):
+            ball_y -= speed
+    if current_direction == "down" and can_move(ball_x, ball_y + speed):
+            ball_y += speed
+    if current_direction == "left" and can_move(ball_x - speed, ball_y):
+            ball_x -= speed
+    if current_direction == "right" and can_move(ball_x + speed, ball_y):
+            ball_x += speed
 
-    if keys[pygame.K_UP]:
-        if can_move(ball_x, ball_y - speed):
-            new_y -= speed
-    if keys[pygame.K_DOWN]:
-        if can_move(ball_x, ball_y + speed):
-            new_y += speed
-    if keys[pygame.K_LEFT]:
-        if can_move(ball_x - speed, ball_y):
-            new_x -= speed
-    if keys[pygame.K_RIGHT]:
-        if can_move(ball_x + speed, ball_y):
-            new_x += speed
 
-    ball_x, ball_y = new_x, new_y
 
     # Check for collisions
     # if can_move(new_x, ball_y):
@@ -197,6 +190,7 @@ while running:
     # Win condition
     if is_ball_in_target():
         print("You won!")
+        current_direction = None
         # running = False
 
     pygame.display.flip()
