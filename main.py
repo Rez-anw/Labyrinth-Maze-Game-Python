@@ -41,16 +41,16 @@ maze = [
 
 # Cell and Target setting
 cell_size = 40
-target_x, target_y = 8 * cell_size, 9 * cell_size
+target_x, target_y = 10 * cell_size, 7 * cell_size
 
 
 # Ball setting
 ball_x, ball_y = cell_size + 10, cell_size + 10
 ball_size = cell_size - 20
-speed = 4
+speed = 5
 
 
-# Draw the maza
+# Draw the maze
 def draw_maze():
     for row_index, row in enumerate(maze):
         for col_index, cell in enumerate(row):
@@ -67,11 +67,14 @@ def draw_maze():
 def draw_ball():
     pygame.draw.ellipse(screen, red, (ball_x, ball_y, ball_size, ball_size))
 
+def draw_target():
+    pygame.draw.rect(screen, green, (target_x, target_y, cell_size, cell_size))
+
 # Movement control
 def can_move(x, y):
     row = y // cell_size
     col = x // cell_size
-    return maze[row][col]
+    return maze[row][col] == 0
 
 # Check if ball is at the target
 def is_ball_in_target():
@@ -100,7 +103,7 @@ while running:
         new_y -= speed
     if keys[pygame.K_DOWN]:
         new_y += speed
-    if keys[pygame.K_DOWN]:
+    if keys[pygame.K_LEFT]:
         new_x -= speed
     if keys[pygame.K_RIGHT]:
         new_x += speed
@@ -115,12 +118,8 @@ while running:
     screen.fill(white)
     draw_maze()
     draw_ball()
+    draw_target()
 
-    # Update display
-    pygame.display.flip()
-
-    # Cap the frame rate
-    clock.tick(30)
 
     # Win condition
     if is_ball_in_target():
