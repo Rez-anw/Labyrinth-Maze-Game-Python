@@ -5,7 +5,7 @@ import sys
 pygame.init()
 
 # Screen dimession
-width, height = 800, 600
+width, height = 800, 800
 
 # Colours
 white = (255, 255, 255)
@@ -21,7 +21,7 @@ pygame.display.set_caption("Labyrinth Maze Game")
 clock = pygame.time.Clock()
 
 # Maze layout: 1 = wall, 0 = Path
-maze = [
+maze1 = [
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
     [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
     [1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 0, 1, 0, 1],
@@ -39,9 +39,34 @@ maze = [
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
 ]
 
+maze2 = [
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+    [1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1],
+    [1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1],
+    [1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1],
+    [1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1],
+    [1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1],
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1],
+    [1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1],
+    [1, 0, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1],
+    [1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1],
+    [1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1],
+    [1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1],
+    [1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1],
+    [1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1],
+    [1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1],
+    [1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+]
+
+
 # Cell and Target setting
 cell_size = 40
-target_x, target_y = 10 * cell_size, 7 * cell_size
+target_x, target_y = 13 * cell_size, 17 * cell_size
+maze = maze2
 
 
 # Ball setting
@@ -71,10 +96,43 @@ def draw_target():
     pygame.draw.rect(screen, green, (target_x, target_y, cell_size, cell_size))
 
 # Movement control
+# def can_move(x, y):
+#     row = y // cell_size
+#     col = x // cell_size
+#     return maze[row][col] == 0
+
+# def can_move(x, y):
+#     # Define balls bounding box based on its size
+#     ball_rect = pygame.Rect(x, y, ball_size, ball_size)
+#
+#     # Check if any part of the ball overlaps a wall
+#     for row_index, row in enumerate(maze):
+#         for col_index, cell in enumerate(maze):
+#             if cell == 1:
+#                 wall_rect = pygame.Rect(col_index * cell_size, row_index * cell_size, cell_size, cell_size)
+#                 if ball_rect.colliderect(wall_rect):
+#                     return False
+#     return True
+
 def can_move(x, y):
-    row = y // cell_size
-    col = x // cell_size
-    return maze[row][col] == 0
+    # Define the player's bounding box based on its size
+    player_rect = pygame.Rect(x, y, ball_size, ball_size)
+
+    # Check if any part of the player overlaps a wall
+    for row_index, row in enumerate(maze):
+        for col_index, cell in enumerate(row):
+            if cell == 1:  # Wall
+                wall_rect = pygame.Rect(
+                    col_index * cell_size,
+                    row_index * cell_size,
+                    cell_size,
+                    cell_size,
+                )
+                if player_rect.colliderect(wall_rect):
+                    return False  # Player hits a wall
+    return True  # Player is not colliding with any walls
+
+
 
 # Check if ball is at the target
 def is_ball_in_target():
@@ -99,20 +157,35 @@ while running:
     keys = pygame.key.get_pressed()
     new_x, new_y = ball_x, ball_y
 
+    # if keys[pygame.K_UP]:
+    #     new_y -= speed
+    # if keys[pygame.K_DOWN]:
+    #     new_y += speed
+    # if keys[pygame.K_LEFT]:
+    #     new_x -= speed
+    # if keys[pygame.K_RIGHT]:
+    #     new_x += speed
+
     if keys[pygame.K_UP]:
-        new_y -= speed
+        if can_move(ball_x, ball_y - speed):
+            new_y -= speed
     if keys[pygame.K_DOWN]:
-        new_y += speed
+        if can_move(ball_x, ball_y + speed):
+            new_y += speed
     if keys[pygame.K_LEFT]:
-        new_x -= speed
+        if can_move(ball_x - speed, ball_y):
+            new_x -= speed
     if keys[pygame.K_RIGHT]:
-        new_x += speed
+        if can_move(ball_x + speed, ball_y):
+            new_x += speed
+
+    ball_x, ball_y = new_x, new_y
 
     # Check for collisions
-    if can_move(new_x, ball_y):
-        ball_x = new_x
-    if can_move(ball_x, new_y):
-        ball_y = new_y
+    # if can_move(new_x, ball_y):
+    #     ball_x = new_x
+    # if can_move(ball_x, new_y):
+    #     ball_y = new_y
 
     # Drawing
     screen.fill(white)
